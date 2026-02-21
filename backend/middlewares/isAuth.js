@@ -1,0 +1,19 @@
+//used to access token from cookies and verify user authentication
+import jwt from 'jsonwebtoken';
+const isAuth=(req,res,next)=>{
+    try {
+       const token = req.cookies.token
+        if(!token){
+            return res.status(400).json({message: 'Unauthorized'})
+        }
+        const decodeToken=jwt.verify(token,process.env.JWT_SECRET)
+        if(!decodeToken){
+            return res.status(400).json({message: 'token not verified'})
+        }
+        req.userId=decodeToken.userId
+        next();
+    } catch (error) {
+         return res.status(500).json({message: 'is auth error'})
+    }
+}
+export default isAuth;
